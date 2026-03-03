@@ -1,0 +1,19 @@
+# Run terraform plan
+terraform plan
+
+# The command will fail because we are missing the local provider
+# Run terraform init
+terraform init
+
+# Run terraform plan again and save the plan
+terraform plan -out=tfplan
+
+# View the content of the saved plan
+terraform show tfplan
+
+# Run terraform apply with the saved plan
+terraform apply tfplan
+
+# View the contents of the hello.txt file
+cat hello.txt
+

@@ -1,0 +1,20 @@
+# List out the current files in the random_string directory
+ls -la
+
+# View the contents of the state file
+cat terraform.tfstate | jq | head -20
+
+# Run terraform plan
+terraform plan
+
+# Rename the state file
+mv terraform.tfstate terraform.tfstate.missing
+
+# Run terraform plan again
+terraform plan
+
+# Rename the state file back to terraform.tfstate
+mv terraform.tfstate.missing terraform.tfstate
+
+# Run terraform plan again
+terraform plan

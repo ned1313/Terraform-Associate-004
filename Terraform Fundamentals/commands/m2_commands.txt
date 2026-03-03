@@ -1,0 +1,29 @@
+# Create a directory for the Terraform configuration files
+mkdir random_string
+
+# Change into the new directory
+cd random_string
+
+# Create a file named terraform.tf
+touch terraform.tf
+
+# Create a file named main.tf
+touch main.tf
+
+# Create a file named outputs.tf
+touch outputs.tf
+
+# Run terraform with -h
+terraform -h
+
+# Run terraform init with -h
+terraform init -h
+
+# Run terraform init
+terraform init
+
+# Run terraform plan
+terraform plan
+
+# Run terraform apply
+terraform apply
