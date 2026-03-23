@@ -1,7 +1,7 @@
-variable      "string_length" {
-description = "Length of random string. Defaults to 16."
+variable "string_length" {
+  description = "Length of random string. Defaults to 16."
   type        = number
-  default       = 16
+  default     = 16
 }
 
 variable "file_name" {

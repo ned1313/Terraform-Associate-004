@@ -3,6 +3,6 @@ resource "random_string" "main" {
 }
 
 resource "local_file" "main" {
-  filename  = var.file_name
-  content = random_string.main.result
+  filename = var.file_name
+  content  = random_string.main.result
 }
