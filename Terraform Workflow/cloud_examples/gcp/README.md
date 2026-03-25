@@ -15,6 +15,13 @@ This configuration uses Application Default Credentials. Log in via the gcloud C
 gcloud auth application-default login
 ```
 
+Get the billing account and organization ID:
+
+```bash
+gcloud billing accounts list
+gcloud organizations list
+```
+
 ## Usage
 
 Update `testing.tfvars` with your billing account ID and organization ID before running.
