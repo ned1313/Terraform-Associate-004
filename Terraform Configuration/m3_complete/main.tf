@@ -1,12 +1,19 @@
 locals {
   separator = " "
-  pets = random_pet.pookie
+  pets = [random_pet.pookie, random_pet.schmoops]
 }
 resource "random_pet" "pookie" {
-  count = 2
-  length = var.pet_length[count.index]
+  length = var.pet_length[0]
   separator = local.separator
   prefix = trimspace(file("prefix.txt"))
+}
+
+resource "random_pet" "schmoops" {
+  length = var.pet_length[1]
+  separator = local.separator
+  prefix = var.add_schmoops_prefix ? "king" : null
+
+  depends_on = [ random_pet.pookie ]
 }
 
 resource "local_file" "pookie" {
@@ -15,13 +22,4 @@ resource "local_file" "pookie" {
     timestamp = timestamp()
   })
   filename = "pet_report.txt"
-}
-
-resource "local_file" "pet_records" {
-  for_each = {
-    "pookie" = 0
-    "schmoops" = 1
-  }
-  content  = random_pet.pookie[each.value].id
-  filename = "${each.key}.txt"
 }

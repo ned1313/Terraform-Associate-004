@@ -1,9 +1,4 @@
 output "pookie" {
-  description = "Value of the pookie random pet (string)"
-  value = random_pet.pookie.id
-}
-
-output "schmoops" {
-  description = "Value of the schmoops random pet (string)"
-  value = random_pet.schmoops.id
+  description = "Value of pookie random pet (string)"
+  value = title(random_pet.pookie[0].id)
 }

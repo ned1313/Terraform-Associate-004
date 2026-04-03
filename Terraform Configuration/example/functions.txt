@@ -1,0 +1,11 @@
+min(10, 25, 3, 42)
+
+lower("TERRAFORM")
+
+join("-", ["web", "app", "prod"])
+
+lookup({env = "production", region = "us-east-1"}, "team", "default-team")
+
+merge({env = "production", team = "ops"}, {region = "us-east-1", team = "platform"})
+
+contains(["dev", "staging", "production"], "staging")
