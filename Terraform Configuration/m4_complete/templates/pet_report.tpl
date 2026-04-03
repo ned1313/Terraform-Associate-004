@@ -1,4 +1,4 @@
-Pet Report
+${type} Pet Report
 ==========
 
 Pet name | Length

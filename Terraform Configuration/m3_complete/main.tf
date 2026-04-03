@@ -1,25 +1,35 @@
 locals {
   separator = " "
-  pets = [random_pet.pookie, random_pet.schmoops]
 }
-resource "random_pet" "pookie" {
+
+resource "random_pet" "cats" {
   length = var.pet_length[0]
   separator = local.separator
   prefix = trimspace(file("prefix.txt"))
 }
 
-resource "random_pet" "schmoops" {
+resource "random_pet" "dogs" {
   length = var.pet_length[1]
   separator = local.separator
-  prefix = var.add_schmoops_prefix ? "king" : null
+  prefix = var.add_dogs_prefix ? "king" : null
 
-  depends_on = [ random_pet.pookie ]
+  depends_on = [ random_pet.cats ]
 }
 
-resource "local_file" "pookie" {
+resource "local_file" "cats" {
   content  = templatefile("${path.module}/templates/pet_report.tpl", {
-    pets = local.pets
+    pets = [random_pet.cats ]
     timestamp = timestamp()
+    type = "Cat"
   })
-  filename = "pet_report.txt"
+  filename = "cats.txt"
+}
+
+resource "local_file" "dogs" {
+  content  = templatefile("${path.module}/templates/pet_report.tpl", {
+    pets = [random_pet.dogs ]
+    timestamp = timestamp()
+    type = "Dog"
+  })
+  filename = "dogs.txt"
 }
