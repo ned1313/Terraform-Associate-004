@@ -3,7 +3,7 @@
 Hello and welcome to the combined repository for my Terraform Associate 004 learning path on Pluralsight! The path is broken up into six courses:
 
 * [Terraform Fundamentals](https://app.pluralsight.com/ilx/video-courses/terraform-fundamentals-iac-providers-state-004-cert)
-* Core Terraform Workflow
+* [Core Terraform Workflow](http://www.pluralsight.com/courses/core-terraform-workflow-terraform-associate-004-cert)
 * Terraform Configuration
 * Terraform Modules
 * Terraform State
