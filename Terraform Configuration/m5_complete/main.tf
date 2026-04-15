@@ -58,11 +58,3 @@ resource "archive_file" "pet_registry" {
     }
   }
 }
-
-resource "local_file" "fosters" {
-  content = templatefile("${path.module}/templates/foster_parents_report.tpl", {
-    fosters    = var.foster_parents
-  })
-  filename = "foster_parents_report.txt"
-  
-}

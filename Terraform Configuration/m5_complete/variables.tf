@@ -18,9 +18,3 @@ variable "separator" {
     error_message = "Separator must be one of the following: ' ', '-', ':', '+'"
   }
 }
-
-variable "foster_parents" {
-  type = map(string)
-  description = "Foster parents names and preference"
-  sensitive = true
-}
