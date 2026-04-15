@@ -1,8 +1,0 @@
-Fosters report
------------------
-
-This report lists the foster parents and their preferred pet type.
-
-- **Alice** prefers **Dog**
-- **Bob** prefers **Cat**
-- **Charlie** prefers **All**
