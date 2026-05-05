@@ -1,0 +1,7 @@
+# ${pet_type} Report
+
+| Name | Type | ID | Age | Adoption Status |
+|------|------|----|-----|-----------------|
+%{ for pet in pets ~}
+| ${pet.name} | ${pet.type} | ${pet.id} | ${pet.age} | ${pet.adoption_status} |
+%{ endfor ~}
