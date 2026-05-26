@@ -3,8 +3,8 @@
 # create-storage.sh
 #
 # Creates an Azure Storage Account inside a new resource group and prints
-# both the resource group name and storage account name to stdout (one per
-# line) so a caller can capture them for use in a Terraform `import` block.
+# the resource group ID and storage account ID to stdout (one per line) so
+# a caller can capture them for use in a Terraform `import` block.
 #
 # Usage:
 #   ./create-storage.sh [-p PREFIX] [-g RESOURCE_GROUP] [-l LOCATION] [-s SUBSCRIPTION]
@@ -18,7 +18,7 @@
 #   -h                  Show this help.
 #
 # Examples:
-#   read -r rg sa < <(./create-storage.sh | xargs)
+#   read -r rg_id sa_id < <(./create-storage.sh | xargs)
 #   ./create-storage.sh -p mydemo -l westus2
 
 set -euo pipefail
@@ -85,24 +85,31 @@ if ! [[ "$account_name" =~ ^[a-z0-9]{3,24}$ ]]; then
 fi
 
 echo "Creating resource group '$resource_group' in '$location'..." >&2
-if ! az group create --name "$resource_group" --location "$location" --output none; then
+resource_group_id=$(az group create \
+        --name "$resource_group" \
+        --location "$location" \
+        --query id \
+        --output tsv)
+if [[ -z "$resource_group_id" ]]; then
     echo "Failed to create resource group '$resource_group'." >&2
     exit 1
 fi
 
 echo "Creating storage account '$account_name' in resource group '$resource_group'..." >&2
-if ! az storage account create \
+storage_account_id=$(az storage account create \
         --name "$account_name" \
         --resource-group "$resource_group" \
         --location "$location" \
         --sku Standard_LRS \
         --kind StorageV2 \
-        --output none; then
+        --query id \
+        --output tsv)
+if [[ -z "$storage_account_id" ]]; then
     echo "Failed to create storage account '$account_name'." >&2
     exit 1
 fi
 
-# Emit the resource group name and storage account name on stdout (one per
-# line) so callers can capture them cleanly.
-echo "$resource_group"
-echo "$account_name"
+# Emit the resource group ID and storage account ID on stdout (one per
+# line) so callers can capture them cleanly for `terraform import` blocks.
+echo "$resource_group_id"
+echo "$storage_account_id"

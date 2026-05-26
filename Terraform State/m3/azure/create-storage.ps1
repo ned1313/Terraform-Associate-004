@@ -2,14 +2,15 @@
 <#
 .SYNOPSIS
     Creates an Azure Storage Account inside a new resource group and returns
-    the resource group name and storage account name.
+    the resource group ID and storage account ID.
 
 .DESCRIPTION
     Generates a globally-unique storage account name using a prefix plus a
     short random suffix, creates a resource group, and then creates the
     storage account in that resource group using the Azure CLI. The resource
-    group name and storage account name are written to stdout (one per line)
-    so a caller can capture them for use in a Terraform `import` block.
+    group ID and storage account ID (full ARM resource IDs) are written to
+    stdout (one per line) so a caller can capture them for use in a
+    Terraform `import` block.
 
 .PARAMETER Prefix
     Prefix for the storage account name. Must be lowercase letters and
@@ -27,13 +28,13 @@
 
 .EXAMPLE
     PS> ./create-storage.ps1
-    tf-import-demo-rg
-    tfimportdemoa1b2c3d4
+    /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tf-import-demo-rg
+    /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tf-import-demo-rg/providers/Microsoft.Storage/storageAccounts/tfimportdemoa1b2c3d4
 
 .EXAMPLE
-    PS> $out      = ./create-storage.ps1 -Prefix "mydemo" -Location "westus2"
-    PS> $rgName   = $out[0]
-    PS> $saName   = $out[1]
+    PS> $out   = ./create-storage.ps1 -Prefix "mydemo" -Location "westus2"
+    PS> $rgId  = $out[0]
+    PS> $saId  = $out[1]
 #>
 [CmdletBinding()]
 param(
@@ -78,24 +79,29 @@ if ($accountName -notmatch '^[a-z0-9]{3,24}$') {
 }
 
 Write-Verbose "Creating resource group '$ResourceGroup' in '$Location'..."
-$null = & az group create --name $ResourceGroup --location $Location --output none 2>&1
-if ($LASTEXITCODE -ne 0) {
+$resourceGroupId = & az group create `
+    --name $ResourceGroup `
+    --location $Location `
+    --query id `
+    --output tsv
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($resourceGroupId)) {
     throw "Failed to create resource group '$ResourceGroup' (az exit code $LASTEXITCODE)."
 }
 
 Write-Verbose "Creating storage account '$accountName' in resource group '$ResourceGroup'..."
-$null = & az storage account create `
+$storageAccountId = & az storage account create `
     --name $accountName `
     --resource-group $ResourceGroup `
     --location $Location `
     --sku Standard_LRS `
     --kind StorageV2 `
-    --output none 2>&1
-if ($LASTEXITCODE -ne 0) {
+    --query id `
+    --output tsv
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($storageAccountId)) {
     throw "Failed to create storage account '$accountName' (az exit code $LASTEXITCODE)."
 }
 
-# Emit the resource group name and storage account name on stdout (one per
-# line) so callers can capture them cleanly.
-$ResourceGroup
-$accountName
+# Emit the resource group ID and storage account ID on stdout (one per
+# line) so callers can capture them cleanly for `terraform import` blocks.
+$resourceGroupId
+$storageAccountId

@@ -1,16 +1,18 @@
-# Replace the values below with the resource group name and storage account
-# name that were emitted by ./create-storage.ps1 or ./create-storage.sh, then
-# run `terraform plan` to generate the import configuration.
+# Replace the values in the import blocks belows with the resource group ID
+# and storage account ID that were emitted by the create-storage script. Then
+# run `terraform plan -generate-config-out=imports.tf` to generate the import configuration.
 
 resource "azurerm_resource_group" "logs" {
   name     = "tf-import-demo-rg"
   location = "eastus"
 }
 
-resource "azurerm_storage_account" "logs" {
-  name                     = "tfimportdemoffff75b5"
-  resource_group_name      = azurerm_resource_group.logs.name
-  location                 = azurerm_resource_group.logs.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+import {
+  to = azurerm_resource_group.logs
+  id= "RESOURCE_GROUP_ID"
+}
+
+import {
+  to = azurerm_storage_account.logs
+  id= "STORAGE_ACCOUNT_ID"
 }
