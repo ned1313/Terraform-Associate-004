@@ -1,0 +1,45 @@
+import "tfplan/v2" as tfplan
+
+# List of mandatory tags that must be present on every EC2 instance
+mandatory_tags = [
+    "Name",
+    "Environment",
+    "Owner",
+    "CostCenter",
+]
+
+# Get all EC2 instances from the plan
+ec2_instances = filter tfplan.resource_changes as _, rc {
+    rc.type is "aws_instance" and
+    (rc.change.actions contains "create" or rc.change.actions contains "update")
+}
+
+# Validate that each EC2 instance has all the mandatory tags
+ec2_tags_validated = rule {
+    all ec2_instances as address, instance {
+        all mandatory_tags as tag {
+            instance.change.after.tags is not null and
+            instance.change.after.tags contains tag and
+            instance.change.after.tags[tag] is not "" and
+            instance.change.after.tags[tag] is not null
+        }
+    }
+}
+
+# Print informational messages for any violations
+print_violations = func() {
+    for ec2_instances as address, instance {
+        tags = instance.change.after.tags else {}
+        for mandatory_tags as tag {
+            if tags[tag] else "" is "" {
+                print("EC2 instance", address, "is missing mandatory tag:", tag)
+            }
+        }
+    }
+    return true
+}
+
+# Main rule
+main = rule {
+    ec2_tags_validated and print_violations()
+}
